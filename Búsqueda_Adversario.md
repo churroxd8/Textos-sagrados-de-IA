@@ -51,7 +51,7 @@ Podemos definir la búsqueda adversarial (conocida como Minimax) de la siguiente
 - La labor de cómputo para el valor minimax de cada nodo es: La utilidad fácilmente posible en contra de la racionalidad (concepto de óptimo). Parecido al pensamiento de como los ludopatas de los casinos o de la bolsa de valores piensan que van a "chingarse" al sistema.
 
 ### Una posible implementación de Minimax
-```python
+```
 def max-value(state):
     initialize v = //aquí va menos infinito hipotético
     for each successor of state:
@@ -66,3 +66,34 @@ def min-value(state):
 Esto también lo podemos ver de la siguiente manera:
 $$V(s)=max\space \text{donde}\space s^{\shortmid}\in successors(s)\space V(s^{\shortmid})$$
 $$V(s^{\shortmid})=min\space \text{donde}\space s\in successors(s^{\shortmid})\space V(s)$$
+
+## Implementación de dispatch para el Minimax
+```
+def value(state):
+    si el estado es un estado terminal: regresamos la utilidad del estado
+    si el siguiente nodo es MAX: regresamos max-value(state)
+    si el siguiente nodo es MIN: regresamos min-value(state)
+
+def max-value(state):
+    inicializamos v = menos infinito
+    for each successor of state:
+        v = max(v, value(sucessor))
+    return v
+
+def min-value(state):
+    inicializamos v = más infinito
+    for each successor of state:
+        v = min(v, value(sucessor))
+    return v
+```
+## La eficiencia del minimax
+Si bien la idea del minimax puro (hago incapié en puro) es bonita, en un caso real, solamente nos serviría para árboles bastante pequeños debido a que realiza todo el recorrido del árbol.
+
+Por ejemplo, en el ajedrez tenemos que $b \approx 35$, $m \approx 100$, es necesario realizar las siguientes anotaciones:
+- La resolución de una partida de ajedrez no se da en 100 turnos, es decir, una partida puede acabar en menos turnos. Un dato curioso, es que en normas oficiales, las partidas tienen límite de turnos y en caso de no haber un jugador victorioso, se declara empate.
+- Esto nos hace hacernos la siguiente pregunta, ¿es necesario recorrer todo un árbol de posibles jugadas?
+
+Esto de primera mano, no es para nada eficente, por lo que es necesario implementar maneras de que el minimax realice su recorrido dentro del árbol de búsqueda de forma eficiente.
+
+### La poda alfa beta
+Para iniciar, debemos mencionar que el orden de generación de los datos contenidos en el árbol es bastante importante, debido a que determina el resultado después de aplicar la poda alfa beta dentro del minimax.
